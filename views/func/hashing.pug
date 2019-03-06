@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  .row
+    form.col.s12
+      .row
+        .input-field.col.s6
+          input.validate(type='text')
+          label(for='first_name') Param 1
+        .input-field.col.s6
+          input.validate(type='text')
+          label(for='last_name') Param 2
+      .row
+        .input-field.col.s6
+          a.waves-effect.waves-light.btn Invoke

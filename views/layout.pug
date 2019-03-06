@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title= title
+    // Compiled and minified CSS
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css')
+    // Custom stylesheet
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .row
+      .col.s12
+        span.flow-text We Provide High-Performance Functions as a service
+    .row
+      .col.s3
+        table
+          thead
+            tr
+              th Function
+          tbody
+            tr
+              td
+                a(href='/func/hashing') Hashing
+            tr
+              td
+                a(href='/func/merge-sort') Merge Sort
+            tr
+              td
+                a(href='/func/edge-detection') Edge Detection
+      .col.s9
+        block content
+
+  // Compiled and minified JavaScript
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
