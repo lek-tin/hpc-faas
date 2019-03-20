@@ -1,13 +1,11 @@
-LINK = nvcc
+NVCC        = nvcc
+NVCC_FLAGS  = -Wno-deprecated-gpu-targets -O2 -Xcompiler -fopenmp -std=c++11
+EXE         = edge
 
-OUT_FILE = edge
+default: $(EXE)
 
-FLAGS = -Wno-deprecated-gpu-targets -O2 -Xcompiler -fopenmp -std=c++11
-
-all: edge
-
-edge: sobelFilter.cu lodepng.cpp
-	$(LINK) -o $(OUT_FILE) $(FLAGS) $^
+edge: edge_detection.cu lodepng.cpp
+	$(NVCC) -o $(EXE) $(NVCC_FLAGS) $^
 
 clean: 
-	rm -f *.o *~ core
+	rm -f *.o *~ core $(EXE)

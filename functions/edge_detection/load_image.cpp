@@ -11,52 +11,38 @@ struct image_data {
     unsigned int height;
 };
 
-void image_write(char *filename, std::string appendTxt, image_data img);
+void image_write(char *file_name, std::string text, image_data image);
 
-image_data img_load(char *filename) {
+// loads a .png image, and makes it gray_scale so we can start the edge detection
+// this is all on cpu side
+image_data img_load(char *file_name) {
     unsigned int width, height;
     byte *rgb;
-    unsigned error = lodepng_decode_file(&rgb, &width, &height, filename, LCT_RGBA, 8);
-    if (error) {
-        printf("LodePNG had an error during file processing. Exiting program.\n");
-        printf("Error code: %u: %s\n", error, lodepng_error_text(error));
-        exit(2);
-    }
-    byte *grayscale = new byte[width * height];
-    byte *img = rgb;
+    lodepng_decode_file(&rgb, &width, &height, file_name, LCT_RGBA, 8);
+
+    byte *gray_scale = new byte[width * height];
+    byte *image = rgb;
+
     for (int i = 0; i < width * height; ++i) {
-        int r = *img++;
-        int g = *img++;
-        int b = *img++;
-        int a = *img++;
-        grayscale[i] = 0.3 * r + 0.6 * g + 0.1 * b + 0.5;
+        int r = *image++;
+        int g = *image++;
+        int b = *image++;
+        int a = *image++;
+        gray_scale[i] = 0.3 * r + 0.6 * g + 0.1 * b + 0.5;
     }
+
     free(rgb);
-    image_data gray = image_data(grayscale, width, height);
-    image_write(filename, "grayscale", gray);
-    return gray;//image_data(grayscale, width, height);
+    image_data gray = image_data(gray_scale, width, height);
+    image_write(file_name, "grayscale", gray);
+    return gray;
 }
 
-/************************************************************************************************
- * void image_write(char*, std::string, image_data)
- * - This function takes a filename as a char array, a string of text, and a structure containing
- * - the image's pixel info, width, and height. The function will take the original filename,
- * - remove the .png ending and append text before re-adding the .png extension, then lodepng is
- * - called to encode the pixel data into a png, before the function leaves the pixel data from the
- * - structure is freed as it is not needed anymore.
- * Inputs:        char* filename : the filename of the original image file
- *         std::string appendTxt : the text to append after the original image filename
- *                   image_data img : the structure containing the image's pixel and dimensions
- ***********************************************************************************************/
-void image_write(char *filename, std::string appendTxt, image_data img) {
-    std::string newName = filename;
-    newName = newName.substr(0, newName.rfind("."));
-    newName.append("_").append(appendTxt).append(".png");
-    unsigned error = lodepng_encode_file(newName.c_str(), img.pixels, img.width, img.height, LCT_GREY, 8);
-    if (error) {
-        printf("LodePNG had an error during file writing. Exiting program.\n");
-        printf("Error code: %u: %s\n", error, lodepng_error_text(error));
-        exit(3);
-    }
-    delete[] img.pixels;
+// writes the new image as a png image
+// gets info from the gpu and uses it to write the edge-detected image
+void image_write(char *file_name, std::string text, image_data image) {
+    std::string out_file_name = file_name;
+    out_file_name = out_file_name.substr(0, out_file_name.rfind("."));
+    out_file_name.append("_").append(text).append(".png");
+    lodepng_encode_file(out_file_name.c_str(), image.pixels, image.width, image.height, LCT_GREY, 8);
+    delete[] image.pixels;
 }
