@@ -23,7 +23,7 @@ double time_encrypt_cpu, time_decrypt_cpu;
 float time_encrypt_gpu = 0.0;
 float time_decrypt_gpu = 0.0;
 
-int main() {
+int main(int argc,char* argv[]) {
 
 	p = 157;
 	q = 373;
@@ -34,11 +34,12 @@ int main() {
 	printf("*****  Welcome to  Encryption/Decryption program Using RSA  ******\n");
 	printf("******************************************************************\n\n");
 
-	printf("Please select one of these options:\n");
-	printf("1. Enter your own input\n2.Random generated input\n\n");
+//	printf("Please select one of these options:\n");
+//	printf("1. Enter your own input\n2.Random generated input\n\n");
 
-	input=fgetc(stdin);
-	input=input-'0';
+//	input=fgetc(stdin);
+//	input=input-'0';
+	input=atoi(argv[1]);
 	// Check if the input is valid
 	if(input!=1 && input !=2)
 	{
@@ -48,8 +49,9 @@ int main() {
 	if(input==1)
 	{
 
-	 printf("\nENTER MESSAGE: ");
-	 scanf("%s",msg);
+//	 printf("\nENTER MESSAGE: ");
+//	 scanf("%s",msg);
+	 strcpy(msg,argv[2]);
 	 numChars = strlen(msg);
 	 blocksPerGrid =(numChars + threadsPerBlock - 1) / threadsPerBlock;
 	
@@ -71,7 +73,7 @@ int main() {
 	fclose(f);
 
 	numChars = strlen(msg) - 1;
-	printf("numChars: %d)\n\n", numChars);
+	printf("Number of Inputs: %d)\n\n", numChars);
 	blocksPerGrid = (numChars + threadsPerBlock - 1) / threadsPerBlock;
 	}
 
@@ -82,11 +84,6 @@ int main() {
 	n = p * q;
 	t = (p - 1) * (q - 1);
 	ce();
-	/*
-	 printf("\nPOSSIBLE VALUES OF e AND d ARE\n");
-	 for (i = 0; i < j - 1; i++)
-	 printf("\n%ld\t%ld", e[i], d[i]);
-	 */
 
 	encrypt();
 	decrypt();
@@ -158,7 +155,6 @@ void encrypt() {
 	start_encrypt = clock();
 	printf("CPU starts encrypting...\n");
 	int pt, ct, key = e[0], k, len;
-	printf("\ne=%d\n",key);
 	i = 0;
 	len = numChars;
 	while (i != len) {
@@ -177,12 +173,6 @@ void encrypt() {
 	end_encrypt = clock();
 	time_encrypt_cpu = (double) (end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
 	printf("Encryption time taken by CPU: %f s\n", time_encrypt_cpu);
-	/*
-	 en[i] = -1;
-	 printf("\nCPU ENCRYPTED MESSAGE IS\n");
-	 for (i = 0; en[i] != -1; i++)
-	 printf("%d ", en[i]);
-	 */
 
 	printf("Saving CPU encrypted file in encrypted_cpu.txt\n ");
 	en[i] = -1;
@@ -199,7 +189,6 @@ void encrypt() {
 void encrypt_gpu() {
 	cudaEvent_t start_encrypt, stop_encrypt;
 	int key = e[0];
-	//printf("\nkey=%d, n=%d\n",key,n);
 	cudaSetDevice(1);
 	int *dev_num, *dev_key, *dev_den;
 	int *dev_res;
@@ -231,12 +220,6 @@ void encrypt_gpu() {
 	time_encrypt_gpu /= 1000;
 	printf("Encryption time taken by GPU: %f s\n", time_encrypt_gpu);
 
-	/*
-	 printf("\nGPU ENCRYPTED MESSAGE IS\n");
-	 for (i = 0; i < numChars; i++)
-	 printf("%d ", res[i]+96);
-	 printf("\n");
-	 */
 
 	printf("Saving GPU encrypted file in encrypted_gpu.txt\n");
 	FILE *fp = fopen("encrypted_gpu.txt", "wb");
@@ -308,7 +291,6 @@ void decrypt() {
 	start_decrypt = clock();
 	printf("CPU starts decrypting...\n");
 	long int pt, ct, key = d[0], k;
-	printf("\nd=%d\n",key);
 	i = 0;
 	while (en[i] != -1) {
 		ct = temp[i];
