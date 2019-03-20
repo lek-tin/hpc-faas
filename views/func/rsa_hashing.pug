@@ -1,15 +1,23 @@
 extends ../layout
 
 block content
+  h4 RSA Hashing
+  hr
   .row
     form.col.s12
       .row
         .input-field.col.s6
           input.validate(type='text')
-          label(for='first_name') Param 1
+          label(for='input') Input
         .input-field.col.s6
           input.validate(type='text')
-          label(for='last_name') Param 2
+          label(for='message') Message
+      .row
+        .col.s12
+          .btn
+            span Result
+            a
+              i.material-icons file_download
       .row
         .input-field.col.s6
           a.waves-effect.waves-light.btn Invoke
