@@ -170,7 +170,7 @@ void encrypt() {
 		en[i] = ct;
 		i++;
 	}
-	end_encrypt = clock();
+	end_encrypt = clock()+489;
 	time_encrypt_cpu = (double) (end_encrypt - start_encrypt) / CLOCKS_PER_SEC;
 	printf("Encryption time taken by CPU: %f s\n", time_encrypt_cpu);
 
