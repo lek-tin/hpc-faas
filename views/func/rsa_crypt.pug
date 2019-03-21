@@ -1,15 +1,21 @@
 extends ../layout
 
 block content
-  h4 RSA Hashing
+  h4 RSA Crypt
   hr
   .row
     form.col.s12
       .row
         .input-field.col.s6
-          input.validate(type='text')
-          label(for='input') Input
-        .input-field.col.s6
+          label
+            input(name="input-type", type="radio")
+            span Random
+      .row
+        .input-field.col.s3
+          label
+            input(name="input-type", type="radio")
+            span Custom input
+        .input-field.col.s9
           input.validate(type='text')
           label(for='message') Message
       .row

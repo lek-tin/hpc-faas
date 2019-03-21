@@ -1,5 +1,5 @@
 var routes = {
   EDGE_DETECTION: 'edge_detection',
-  RSA_HASHING: 'rsa_hashing'
+  RSA_CRYPT: 'rsa_crypt'
 }
 module.exports = routes;
