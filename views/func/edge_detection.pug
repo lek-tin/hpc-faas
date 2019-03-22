@@ -9,30 +9,50 @@ block content
         .file-field.input-field.col.s12
           .btn
             span File
-            input(type='file', multiple='')
+            input#inputImage(type='file', name='input', multiple='')
           .file-path-wrapper
             input.file-path.validate(type='text', placeholder='Upload a PNG file')
       .row
         .file-field.input-field.col.s12
-          .btn
+          a.btn#result(target = "_blank", style={ display: "none" })
             span Result
-            a
-              i.material-icons file_download
-          //-   input(type='file', disabled="true", multiple='')
-          //- .file-path-wrapper
-          //-   input.file-path.validate(type='text', placeholder='Click to download the result')
+            i.material-icons file_download
 
       .row
         .input-field.col.s12
-          a#invoke.waves-effect.waves-light.btn Invoke
+          a#invoke.waves-effect.waves-light.btn(disabled = "true") Invoke
 
   script.
+    var invokeBtn = $('#invoke');
+    $('#inputImage').on('change', function() {
+      if (document.getElementById("inputImage").files[0]) {
+        invokeBtn.attr("disabled", false)
+      }
+    })
+
     $('#invoke').on('click', function() {
-      fetch('http://example.com/movies.json')
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(res) {
-          console.log(JSON.stringify(res));
-        });
-    });
+      var inputImage = document.getElementById("inputImage").files[0];
+      if (!inputImage) return
+
+      var result = $('#result');
+      var formData = new FormData();
+      formData.append('id', new Date().getTime());
+      formData.append('inputImage', inputImage);
+      invokeBtn.attr("disabled", true)
+      invokeBtn.text("Please wait...")
+      result.css('display', 'none');
+      result.attr('href', '');
+      fetch('edge_detection', {
+        method: 'POST',
+        body: formData
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        result.css('display', 'block');
+        result.attr('href', '/' + myJson.resultImage);
+        invokeBtn.attr("disabled", false)
+        invokeBtn.text("Invoke")
+      })
+    })
