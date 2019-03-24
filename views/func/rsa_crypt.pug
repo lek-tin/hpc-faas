@@ -8,22 +8,72 @@ block content
       .row
         .input-field.col.s6
           label
-            input(name="input-type", type="radio")
+            input(name="input-type", value="random", type="radio", checked="true")
             span Random
       .row
         .input-field.col.s3
           label
-            input(name="input-type", type="radio")
+            input(name="input-type", value="custom", type="radio")
             span Custom input
         .input-field.col.s9
-          input.validate(type='text')
-          label(for='message') Message
+          input#message.validate(type='text', placeholder="Enter the message you'd like to encrypt")
+          //- label(for='message') Message
+      .row#resultGroup(style = { display: "none" })
+        .file-field.input-field.col.s3
+          a.btn#result1(href="/rest/rsa_crypt/decrypted_cpu.txt", target = "_blank")
+            span CPU-decrypted
+            i.material-icons file_download
+        .file-field.input-field.col.s3
+          a.btn#result2(href="/rest/rsa_crypt/decrypted_gpu.txt", target = "_blank")
+            span GPU-decrypted
+            i.material-icons file_download
+        .file-field.input-field.col.s3
+          a.btn#result3(href="/rest/rsa_crypt/encrypted_cpu.txt", target = "_blank")
+            span CPU-encrypted
+            i.material-icons file_download
+        .file-field.input-field.col.s3
+          a.btn#result4(href="/rest/rsa_crypt/encrypted_gpu.txt", target = "_blank")
+            span GPU-encrypted
+            i.material-icons file_download
       .row
-        .col.s12
-          .btn
-            span Result
-            a
-              i.material-icons file_download
-      .row
-        .input-field.col.s6
-          a.waves-effect.waves-light.btn Invoke
+        .input-field.col.s12
+          //- a#invoke.waves-effect.waves-light.btn(disabled = "true") Invoke
+          a#invoke.waves-effect.waves-light.btn Invoke
+  script.
+    var invokeBtn = $('#invoke');
+    var resultGroup = $('#resultGroup');
+    //- var inputType = "random"
+    //- var textInputValid = false
+    //- $('#message').on('change', function(e) {
+    //-   if (textInputValid) {
+    //-     invokeBtn.attr("disabled", false)
+    //-   } else {
+    //-     invokeBtn.attr("disabled", true)
+    //-   }
+    //- })
+    $('input[name=input-type], #message').on('click', function(e) {
+      resultGroup.css('display', 'none');
+      //- if (e.target.value === 'custom') {
+      //-   inputType = 'custom'
+      //-   if (textInputValid) {
+      //-   invokeBtn.attr("disabled", false)
+      //- } else {
+      //-   invokeBtn.attr("disabled", true)
+      //- }
+    })
+
+    $('#invoke').on('click', function() {
+      var result1 = $('#result1');
+      var result2 = $('#result2');
+      var result3 = $('#result3');
+      var result4 = $('#result4');
+      invokeBtn.attr("disabled", true)
+      invokeBtn.text("Please wait...")
+      resultGroup.css('display', 'none');
+      setTimeout(() => {
+        console.log('DONE!')
+        resultGroup.css('display', 'block');
+        invokeBtn.attr("disabled", false)
+        invokeBtn.text("Invoke")
+      }, 1000)
+    })
